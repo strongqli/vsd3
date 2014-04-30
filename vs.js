@@ -4,7 +4,7 @@ var w = 925,
 	startYear = 1999, 
 	endYear = 2013,
 	startVal = 0,
-	endVal = 8000000,
+	endVal = 800,
 	y = d3.scale.linear().domain([endVal, startVal]).range([0 + margin, h - margin]),
 	x = d3.scale.linear().domain([1999, 2013]).range([0 + margin -5, w]),
 	years = d3.range(startYear, endYear);
@@ -34,14 +34,14 @@ d3.text('report-data.csv', 'text/csv', function(text) {
         var started = false;
         for (j=0; j < values.length; j++) {
             if (values[j] != '') {
-                currData.push({ x: years[j], y: values[j] });
+                currData.push({ x: years[j], y: values[j]/10000 });
             
                 if (!started) {
-                    startEnd[stocks[i][1]] = { 'startYear':years[j], 'startVal':values[j] };
+                    startEnd[stocks[i][1]] = { 'startYear':years[j], 'startVal':values[j]/10000 };
                     started = true;
                 } else if (j == values.length-1) {
                     startEnd[stocks[i][1]]['endYear'] = years[j];
-                    startEnd[stocks[i][1]]['endVal'] = values[j];
+                    startEnd[stocks[i][1]]['endVal'] = values[j]/10000;
                 }
                 
             }
@@ -60,17 +60,15 @@ vis.append("svg:line")
     .attr("y1", y(startVal))
     .attr("x2", x(2013))
     .attr("y2", y(startVal))
-    .attr("class", "axis")
 
 vis.append("svg:line")
     .attr("x1", x(startYear))
     .attr("y1", y(startVal))
     .attr("x2", x(startYear))
     .attr("y2", y(endVal))
-    .attr("class", "axis")
 			
 vis.selectAll(".xLabel")
-    .data(x.ticks(5))
+    .data(x.ticks(10))
     .enter().append("svg:text")
     .attr("class", "xLabel")
     .text(String)
@@ -89,7 +87,7 @@ vis.selectAll(".yLabel")
 	.attr("dy", 3)
 			
 vis.selectAll(".xTicks")
-    .data(x.ticks(5))
+    .data(x.ticks(10))
     .enter().append("svg:line")
     .attr("class", "xTicks")
     .attr("x1", function(d) { return x(d); })
